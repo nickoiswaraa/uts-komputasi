@@ -1,77 +1,93 @@
-$(document).ready(function() {
-    let chart;
+function evaluateExpression(expression, x) {
+    return new Function('x', `return ${expression};`)(x);
+}
 
-    $('#newtonRaphsonForm').submit(function(e) {
-        e.preventDefault();
-        
-        $.ajax({
-            url: 'calculate2.php',
-            type: 'POST',
-            data: $(this).serialize(),
-            dataType: 'json',
-            success: function(response) {
-                if (response.error) {
-                    $('#result').html(`<p class="alert alert-danger">${response.error}</p>`);
-                } else if (response.method === 'raphson') {
-                    $('#result').html(`<p class="alert alert-success">Root found: ${response.root.toFixed(6)}</p>`);
-                    drawNewtonRaphsonChart(response);
-                }
-            },
-            error: function() {
-                $('#result').html('<p class="alert alert-danger">An error occurred. Please try again.</p>');
-            }
-        });
-    });
+function newtonRaphson(f, df, x0, tolerance, maxIterations) {
+    let x = x0;
+    let iterations = [];
 
-    function drawNewtonRaphsonChart(data) {
-        if (chart) {
-            chart.destroy();
+    for (let i = 0; i < maxIterations; i++) {
+        let fx = evaluateExpression(f, x);
+        let dfx = evaluateExpression(df, x);
+
+        if (Math.abs(dfx) < tolerance) {
+            return { error: 'Turunan mendekati nol. Pilih tebakan awal yang berbeda.', iterations: iterations };
         }
 
-        // Sort iterations by x value
-        let sortedIterations = [...data.iterations].sort((a, b) => a.x - b.x);
+        let xNew = x - fx / dfx;
+        iterations.push({ iteration: i + 1, x: xNew, fx: fx });
 
-        const ctx = document.getElementById('newtonChart').getContext('2d');
-        chart = new Chart(ctx, {
-            type: 'scatter',
-            data: {
-                datasets: [{
-                    label: 'x value',
-                    data: sortedIterations.map(iter => ({x: iter.x, y: iter.fx})),
-                    borderColor: 'blue',
-                    backgroundColor: 'blue',
-                    pointRadius: 5,
-                    showLine: true
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        type: 'linear',
-                        position: 'bottom',
-                        title: {
-                            display: true,
-                            text: 'X'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Y'
-                        }
-                    }
+        if (Math.abs(xNew - x) < tolerance) {
+            return { root: xNew, iterations: iterations };
+        }
+
+        x = xNew;
+    }
+
+    return { error: 'Iterasi maksimum tercapai tanpa konvergensi.', iterations: iterations };
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const f = document.getElementById('function').value;
+        const df = document.getElementById('derivative').value;
+        const initialGuess = parseFloat(document.getElementById('initialGuess').value);
+        const tolerance = parseFloat(document.getElementById('tolerance').value);
+        const maxIterations = parseInt(document.getElementById('maxIterations').value);
+
+        const result = newtonRaphson(f, df, initialGuess, tolerance, maxIterations);
+
+        const resultContainer = document.getElementById('resultContainer');
+        resultContainer.innerHTML = ''; // Clear previous result
+
+        if (result.root !== undefined) {
+            resultContainer.innerHTML += `<div class="alert alert-success">Akar ditemukan: ${result.root}</div>`;
+        } else if (result.error !== undefined) {
+            resultContainer.innerHTML += `<div class="alert alert-danger">${result.error}</div>`;
+        }
+
+        if (result.iterations.length > 0) {
+            const canvas = document.createElement('canvas');
+            canvas.id = 'iterationChart';
+            resultContainer.appendChild(canvas);
+
+            const iterationLabels = result.iterations.map(item => item.iteration);
+            const values = result.iterations.map(item => item.x);
+
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: iterationLabels,
+                    datasets: [{
+                        label: 'Nilai x per Iterasi',
+                        data: values,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    }]
                 },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Newton-Raphson Method Convergence'
-                    },
-                    legend: {
-                        display: true
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Iterasi'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Nilai x'
+                            }
+                        }
                     }
                 }
-            }
-        });
-    }
+            });
+        }
+    });
 });
