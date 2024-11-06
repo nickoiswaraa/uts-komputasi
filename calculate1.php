@@ -102,39 +102,6 @@ function newtonForwardInterpolation($x, $y, $xp) {
     return $result;
 }
 
-function newtonRaphson($f, $df, $x0, $tolerance, $max_iterations) {
-    $x = $x0;
-    $iterations = [];
-
-    for ($i = 0; $i < $max_iterations; $i++) {
-        try {
-            $fx = evaluateExpression($f, $x);
-            $dfx = evaluateExpression($df, $x);
-
-            if (abs($dfx) < $tolerance) {
-                return ['error' => 'Derivative too close to zero. Choose a different initial guess.', 'iterations' => $iterations];
-            }
-
-            $x_new = $x - $fx / $dfx;
-            $iterations[] = ['iteration' => $i + 1, 'x' => $x_new, 'fx' => $fx, 'dfx' => $dfx];
-
-            if (abs($x_new - $x) < $tolerance) {
-                return ['root' => $x_new, 'iterations' => $iterations];
-            }
-
-            if (!is_finite($x_new)) {
-                return ['error' => 'Calculation resulted in a non-finite value. Try a different initial guess.', 'iterations' => $iterations];
-            }
-
-            $x = $x_new;
-        } catch (Exception $e) {
-            return ['error' => 'Error in calculation: ' . $e->getMessage(), 'iterations' => $iterations];
-        }
-        
-    }
-
-    return ['error' => 'Maximum iterations reached without convergence.', 'iterations' => $iterations];
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $method = $_POST['method'];

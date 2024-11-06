@@ -30,15 +30,15 @@
             <div id="forwardInputs">
                 <div class="mb-3">
                     <label for="xValues" class="form-label">Nilai X (Pisahkan dengan Koma):</label>
-                    <input type="text" class="form-control" id="xValues" name="xValues">
+                    <input type="text" class="form-control" id="xValues" name="xValues" placeholder="Contoh: 1, 2, 3, 4" required>
                 </div>
                 <div class="mb-3">
                     <label for="yValues" class="form-label">Nilai Y (Pisahkan dengan Koma):</label>
-                    <input type="text" class="form-control" id="yValues" name="yValues">
+                    <input type="text" class="form-control" id="yValues" name="yValues" placeholder="Contoh: 2, 4, 6, 8" required>
                 </div>
                 <div class="mb-3">
                     <label for="xInterpolate" class="form-label">Nilai X yang di Interpolasi:</label>
-                    <input type="number" class="form-control" id="xInterpolate" name="xInterpolate" step="any">
+                    <input type="number" class="form-control" id="xInterpolate" name="xInterpolate" step="any" placeholder="Contoh: 3.5" required>
                 </div>
             </div>
             

@@ -24,7 +24,7 @@
         <form method="POST" class="mb-4">
             <div class="mb-3">
                 <label for="function" class="form-label">Fungsi (f(x))</label>
-                <input type="text" class="form-control" id="function" name="function" placeholder="Contoh: x^2 - 4" required>
+                <input type="text" class="form-control" id="function" name="function" placeholder="Contoh: 3*x^2 - 4*x - 1" required>
             </div>
             <div class="mb-3">
                 <label for="derivative" class="form-label">Turunan Fungsi (f'(x))</label>
@@ -32,7 +32,7 @@
             </div>
             <div class="mb-3">
                 <label for="initialGuess" class="form-label">Tebakan Awal</label>
-                <input type="number" step="any" class="form-control" id="initialGuess" name="initialGuess" required>
+                <input type="number" step="any" class="form-control" id="initialGuess" name="initialGuess" placeholder="Contoh: 1.5" required>
             </div>
             <div class="mb-3">
                 <label for="tolerance" class="form-label">Toleransi</label>
