@@ -1,4 +1,5 @@
 <?php
+// File: calculate2.php
 function evaluateExpression($expression, $x) {
     $expression = str_replace('x', (string)$x, $expression);
     return eval("return $expression;");
@@ -30,17 +31,17 @@ function newtonRaphson($f, $df, $x0, $tolerance, $max_iterations) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Mendapatkan data dari AJAX
     $function = $_POST['function'];
     $derivative = $_POST['derivative'];
     $initialGuess = floatval($_POST['initialGuess']);
     $tolerance = floatval($_POST['tolerance']);
     $maxIterations = intval($_POST['maxIterations']);
 
+    // Memanggil metode Newton-Raphson
     $result = newtonRaphson($function, $derivative, $initialGuess, $tolerance, $maxIterations);
-    if (isset($result['root'])) {
-        echo "<div class='alert alert-success'>Akar ditemukan: " . $result['root'] . "</div>";
-    } elseif (isset($result['error'])) {
-        echo "<div class='alert alert-danger'>" . $result['error'] . "</div>";
-    }
+
+    // Mengembalikan hasil dalam format JSON
+    header('Content-Type: application/json');
+    echo json_encode($result);
 }
-?>
