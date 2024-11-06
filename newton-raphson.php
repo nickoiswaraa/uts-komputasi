@@ -24,11 +24,13 @@
         <form method="POST" class="mb-4">
             <div class="mb-3">
                 <label for="function" class="form-label">Fungsi (f(x))</label>
-                <input type="text" class="form-control" id="function" name="function" placeholder="Contoh: 3*x^2 - 4*x - 1" required>
+                <input type="text" class="form-control" id="function" name="function" placeholder="Contoh: 3*x*2 - 4*x - 1" required>
+                <div id="hint" class="form-text">Jangan menggunakan '^' apabila ingin merepresentasikan akar</div>
             </div>
             <div class="mb-3">
                 <label for="derivative" class="form-label">Turunan Fungsi (f'(x))</label>
                 <input type="text" class="form-control" id="derivative" name="derivative" placeholder="Contoh: 2*x" required>
+                <div id="hint" class="form-text">Jangan menggunakan '^' apabila ingin merepresentasikan akar</div>
             </div>
             <div class="mb-3">
                 <label for="initialGuess" class="form-label">Tebakan Awal</label>
